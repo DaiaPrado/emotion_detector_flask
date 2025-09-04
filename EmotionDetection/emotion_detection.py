@@ -17,21 +17,34 @@ def emotion_detector(text_to_analyse):
 
     #Formating response to json
     json_response = json.loads(response.text)
+    print("STATUS: ", response.status_code)
+    print("TEXT: ", text_to_analyse)
 
-    #scores of each emotion
-    anger_score = json_response["emotionPredictions"][0]["emotion"]["anger"]
-    disgust_score = json_response["emotionPredictions"][0]["emotion"]["disgust"]
-    fear_score = json_response["emotionPredictions"][0]["emotion"]["fear"]
-    joy_score = json_response["emotionPredictions"][0]["emotion"]["joy"]
-    sadness_score = json_response["emotionPredictions"][0]["emotion"]["sadness"]
+    if response.status_code == 200:
+        #scores of each emotion
+        anger_score = json_response["emotionPredictions"][0]["emotion"]["anger"]
+        disgust_score = json_response["emotionPredictions"][0]["emotion"]["disgust"]
+        fear_score = json_response["emotionPredictions"][0]["emotion"]["fear"]
+        joy_score = json_response["emotionPredictions"][0]["emotion"]["joy"]
+        sadness_score = json_response["emotionPredictions"][0]["emotion"]["sadness"]
 
-    #dictionary of emotions from the json_response output. 
-    emotions = json_response["emotionPredictions"][0]["emotion"]
+        #dictionary of emotions from the json_response output. 
+        emotions = json_response["emotionPredictions"][0]["emotion"]
+        dominant_emotion =  max(emotions, key=emotions.get)
+
+    if response.status_code == 400:
+        print("SI ENTRE")
+        anger_score = None
+        disgust_score = None
+        fear_score = None
+        joy_score = None
+        sadness_score = None
+        dominant_emotion = None
 
     return {'anger': anger_score,
             'disgust': disgust_score,
             'fear': fear_score,
             'joy': joy_score,
             'sadness': sadness_score,
-            'dominant_emotion': max(emotions, key=emotions.get)
+            'dominant_emotion': dominant_emotion
             }
